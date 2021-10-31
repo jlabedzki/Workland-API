@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv-extended").load();
 import express, { Application, Request, Response, NextFunction } from "express";
 import passport from "passport";
 import cookieSession from "cookie-session";
@@ -61,7 +61,6 @@ app.get("/", authCheck, (req: Request, res: Response) => {
     cookies: req.cookies,
   });
 });
-
 
 app.get("/logout", (req: Request, res: Response) => {
   req.logOut();
