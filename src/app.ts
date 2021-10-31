@@ -1,4 +1,4 @@
-require("dotenv-extended").load();
+require("dotenv").config();
 import express, { Application, Request, Response, NextFunction } from "express";
 import passport from "passport";
 import cookieSession from "cookie-session";
