@@ -33,7 +33,7 @@ app.use(
 app.use(function (req, res, next) {
   //@ts-ignore
   res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,PATCH, DELETE");
   res.header(
     "Access-Control-Allow-Headers",
