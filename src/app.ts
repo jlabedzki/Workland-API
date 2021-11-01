@@ -41,6 +41,7 @@ app.use(
   cookieSession({
     name: "session",
     keys: [process.env.COOKIE_KEY!],
+    domain: process.env.CLIENT_URL,
   })
 );
 
