@@ -18,14 +18,7 @@ const cors = require("cors");
 const app: Application = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(cookieParser());
-app.use(
-  cookieSession({
-    name: "session",
-    keys: [process.env.COOKIE_KEY!],
-  })
-);
+// app.use(cors());
 app.use(function (req, res, next) {
   //@ts-ignore
   res.header("Access-Control-Allow-Credentials", true);
@@ -43,6 +36,14 @@ app.use(function (req, res, next) {
 });
 
 const passportSetup = require("./config/");
+app.use(cookieParser());
+app.enable("trust proxy"); // add this line
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [process.env.COOKIE_KEY!],
+  })
+);
 
 app.use(express.json());
 app.use(passport.initialize());
