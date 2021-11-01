@@ -114,4 +114,4 @@ app.listen(port, () => {
   console.log(`Backend running on port ${port}🏃`);
 });
 
-socketServer.listen(5080);
+socketServer.listen(3000);
