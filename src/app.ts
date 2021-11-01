@@ -68,6 +68,7 @@ app.get("/logout", (req: Request, res: Response) => {
 });
 
 app.get("/user", (req: Request, res: Response) => {
+  console.log("-----------", req.isAuthenticated());
   if (req.isAuthenticated()) {
     const reqUser = req.user as any;
     getPersonByGitHub(reqUser.oauth_id).then((data) => {
