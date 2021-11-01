@@ -17,6 +17,7 @@ import { socketServer } from "./socketServer";
 const cors = require("cors");
 const app: Application = express();
 const port = process.env.PORT || 5000;
+app.set("trust proxy", 1); // trust first proxy
 
 app.use(cors());
 app.use(function (req, res, next) {
