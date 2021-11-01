@@ -122,6 +122,8 @@ const io = require("socket.io")(server, {
   cors: {
     origin: "https://example.com",
     methods: ["GET", "POST"],
+    allowedHeaders: ["strict-origin-when-cross-origin"],
+    credentials: true,
   },
 });
 
