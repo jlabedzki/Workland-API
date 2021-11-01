@@ -18,7 +18,22 @@ const cors = require("cors");
 const app: Application = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// app.use(cors());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,PATCH, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+  );
+  if ("OPTIONS" == req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+});
+
 const passportSetup = require("./config/");
 app.use(cookieParser());
 app.use(
@@ -78,6 +93,7 @@ app.get("/user", (req: Request, res: Response) => {
     return;
   }
   console.log("Not logged in or not authenticated");
+  res.status(401).send("not loggedi in or not autenticated");
 });
 
 app.listen(port, () => {
