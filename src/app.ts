@@ -15,7 +15,7 @@ import meetingsRouter from "./routes/meetings";
 import usersMeetingsRouter from "./routes/users_meetings";
 import messagesRouter from "./routes/messages";
 import usersRouter from "./routes/users";
-import { getPersonByGitHub } from "./models/person";
+import { getLoc, saveLoc, getPersonByGitHub } from "./models/person";
 import { socketServer } from "./socketServer";
 import { NONAME } from "dns";
 const cors = require("cors");
@@ -125,6 +125,64 @@ const io = require("socket.io")(server, {
     allowedHeaders: ["Access-Control-Allow-Credentials", true],
     credentials: true,
   },
+});
+
+app.post("/loc", (req: Request, res: Response) => {
+  if (req.isAuthenticated()) {
+    const reqUser = req.user as any;
+    const loc: string = req.body.loc;
+    saveLoc(reqUser.oauth_id, loc).then((data) => {
+      res.status(200).send("saved");
+    });
+    return;
+  }
+  res.status(401).send("not authenticated");
+});
+
+interface LocData {
+  user: UserLoc;
+  others: OtherLoc[];
+}
+
+interface OtherLoc {
+  lat: number;
+  lng: number;
+}
+interface UserLoc extends OtherLoc {
+  name: string;
+}
+
+app.get("/loc", (req: Request, res: Response) => {
+  if (req.isAuthenticated()) {
+    const reqUser = req.user as any;
+    const githubId = reqUser.oauth_id;
+    getLoc().then((data) => {
+      const result: LocData = {
+        user: {
+          lat: 0,
+          lng: 0,
+          name: "",
+        },
+        others: [],
+      };
+      for (let userLocObj of data.rows) {
+        if (!userLocObj.lat || !userLocObj.lng) {
+          continue;
+        }
+        if (userLocObj.oauth_id === githubId) {
+          result.user.lat = userLocObj.lat;
+          result.user.lng = userLocObj.lng;
+          result.user.name = userLocObj.name;
+        } else {
+          result.others.push({ lat: userLocObj.lat, lng: userLocObj.lng });
+        }
+      }
+      // console.log('result :>> ', result);
+      res.status(200).send(result);
+    });
+    return;
+  }
+  res.status(401).send("not authenticated");
 });
 
 let socketIds: SocketId[] = [];
