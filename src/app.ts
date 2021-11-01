@@ -37,6 +37,9 @@ app.use(function (req, res, next) {
 
 const passportSetup = require("./config/");
 app.use(cookieParser());
+
+app.set("trust proxy", 1); // trust first proxy
+
 app.use(
   cookieSession({
     name: "session",
