@@ -20,6 +20,13 @@ const app: Application = express();
 const port = process.env.PORT || 5000;
 
 // app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.CLIENT_URL],
+  })
+);
+
 app.use(function (req, res, next) {
   //@ts-ignore
   res.header("Access-Control-Allow-Credentials", true);
@@ -45,7 +52,6 @@ app.use(
   cookieSession({
     name: "session",
     keys: [process.env.COOKIE_KEY!],
-    domain: process.env.CLIENT_URL,
     sameSite: "none",
     secure: true,
   })
