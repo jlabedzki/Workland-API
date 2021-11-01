@@ -1,6 +1,9 @@
 require("dotenv").config();
 import express, { Application, Request, Response, NextFunction } from "express";
 import passport from "passport";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import type { Room, SocketId } from "socket.io-adapter";
 import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth";
@@ -97,7 +100,7 @@ app.get("/logout", (req: Request, res: Response) => {
 });
 
 app.get("/user", (req: Request, res: Response) => {
-  console.log("-----------", req.isAuthenticated());
+  // console.log("-----------", req.isAuthenticated());
   if (req.isAuthenticated()) {
     const reqUser = req.user as any;
     getPersonByGitHub(reqUser.oauth_id).then((data) => {
@@ -110,8 +113,36 @@ app.get("/user", (req: Request, res: Response) => {
   return res.status(401).send("not loggedi in or not autenticated");
 });
 
-app.listen(port, () => {
-  console.log(`Backend running on port ${port}🏃`);
+// app.listen(port, () => {
+//   console.log(`Backend running on port ${port}🏃`);
+// });
+
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+
+let socketIds: SocketId[] = [];
+
+io.on("connection", (socket: Socket) => {
+  console.log(".........socket connected.......🙌");
+  socket.on("disconnect", () => {
+    const allOtherUsers = socketIds.filter((id) => id !== socket.id);
+    socketIds = [...allOtherUsers];
+    io.emit("userDisconnect", socket.id);
+  });
+
+  socket.on("movementMessage", (arg) => {
+    // console.log('event :>> ', arg);
+    socket.broadcast.emit("movementMessage", arg);
+  });
+
+  socket.on("announcement", (arg) => {
+    io.emit("receivedAnnouncement", arg);
+  });
+
+  socket.on("sendDirect", (arg) => {
+    io.to(arg.payload.receiverSocketId).emit("receiveDirect", arg);
+    io.to(arg.payload.senderSocketId).emit("receiveDirect", arg);
+  });
 });
 
-socketServer.listen(3000);
+server.listen(process.env.PORT || 5000);
