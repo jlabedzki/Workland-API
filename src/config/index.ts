@@ -14,6 +14,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id: number, done) => {
   try {
     const user = await userDb.getPersonByGitHub(id);
+    console.log("+++++++++++", user.rows[0], "+++++++++++");
     done(null, user.rows[0]);
   } catch (e) {
     done(new Error("Failed to deserialize an user"));
