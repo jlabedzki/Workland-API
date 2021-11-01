@@ -93,7 +93,7 @@ app.get("/user", (req: Request, res: Response) => {
     return;
   }
   console.log("Not logged in or not authenticated");
-  res.status(401).send("not loggedi in or not autenticated");
+  return res.status(401).send("not loggedi in or not autenticated");
 });
 
 app.listen(port, () => {
