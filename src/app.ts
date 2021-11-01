@@ -14,6 +14,7 @@ import messagesRouter from "./routes/messages";
 import usersRouter from "./routes/users";
 import { getPersonByGitHub } from "./models/person";
 import { socketServer } from "./socketServer";
+import { NONAME } from "dns";
 const cors = require("cors");
 const app: Application = express();
 const port = process.env.PORT || 5000;
@@ -45,6 +46,8 @@ app.use(
     name: "session",
     keys: [process.env.COOKIE_KEY!],
     domain: process.env.CLIENT_URL,
+    sameSite: "none",
+    secure: true,
   })
 );
 
