@@ -118,7 +118,12 @@ app.get("/user", (req: Request, res: Response) => {
 // });
 
 const server = require("http").createServer(app);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "https://example.com",
+    methods: ["GET", "POST"],
+  },
+});
 
 let socketIds: SocketId[] = [];
 
