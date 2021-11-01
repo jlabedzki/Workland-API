@@ -120,7 +120,7 @@ app.get("/user", (req: Request, res: Response) => {
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://workland.netlify.com",
+    origin: "https://workland.netlify.app",
     methods: ["GET", "POST"],
     allowedHeaders: ["Access-Control-Allow-Credentials", true],
     credentials: true,
